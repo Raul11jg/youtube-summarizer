@@ -1,7 +1,7 @@
-import { getStrapiData } from "@/lib/strapi";
+import { getHomePage } from "@/lib/strapi";
 
 export default async function Home() {
-  const strapiData = await getStrapiData("/api/home-page");
+  const strapiData = await getHomePage();
   console.log(strapiData);
   const { title, description } = strapiData;
 
