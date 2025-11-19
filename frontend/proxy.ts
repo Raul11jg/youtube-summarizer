@@ -20,7 +20,7 @@ export async function proxy(request: NextRequest) {
       },
     });
     const userResponse = await response.json();
-    if (!response.ok || !userResponse?.data) {
+    if (!response.ok || !userResponse) {
       return NextResponse.redirect(new URL("/signin", request.url));
     }
     return NextResponse.next();
