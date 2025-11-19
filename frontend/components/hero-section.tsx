@@ -31,16 +31,20 @@ export function HeroSection({ data }: HeroSectionProps) {
 
   const { title, description, image, headerLink } = data;
   // TODO: Fix image URL for local development if needed (Strapi doesn't return full URL for local uploads usually)
-  const imageUrl = image?.url ? "http://localhost:1337" + image.url : "";
+  const imageUrl = image?.url ? "http://127.0.0.1:1337" + image.url : "";
 
   return (
-    <header className="relative h-[600px] overflow-hidden">
-      {imageUrl && <Image alt={image?.alternativeText ?? "no alternative text"} className="absolute inset-0 -z-10 object-cover" src={imageUrl} fill priority />}
-      <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-white bg-black/20">
-        <h1 className="text-4xl font-bold md:text-6xl lg:text-7xl">{title}</h1>
-        <p className="mt-4 text-lg md:text-xl lg:text-2xl max-w-[600px]">{description}</p>
+    <header className="relative h-[80vh] min-h-[600px] w-full overflow-hidden">
+      {imageUrl && <Image alt={image?.alternativeText ?? "no alternative text"} className="absolute inset-0 -z-10 object-cover" src={imageUrl} fill priority unoptimized />}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/60 -z-10" />
+      <div className="container mx-auto flex h-full flex-col items-center justify-center px-4 text-center text-white">
+        <h1 className="text-5xl font-extrabold tracking-tight md:text-7xl lg:text-8xl drop-shadow-lg">{title}</h1>
+        <p className="mt-6 max-w-2xl text-lg font-medium md:text-2xl drop-shadow-md">{description}</p>
         {headerLink && (
-          <Link className="mt-8 rounded-md bg-white px-6 py-3 text-base font-medium text-black hover:bg-gray-100" href={headerLink.url}>
+          <Link
+            className="mt-10 inline-flex items-center justify-center rounded-full bg-primary px-8 py-4 text-lg font-bold text-primary-foreground shadow-lg transition-transform hover:scale-105 hover:bg-primary/90 active:scale-95"
+            href={headerLink.url}
+          >
             {headerLink.name}
           </Link>
         )}
