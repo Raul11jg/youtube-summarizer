@@ -43,14 +43,6 @@ export default function SignUpForm() {
           provider="google"
           onClick={() => handleSocialLogin("Google")}
         />
-        <SocialLoginButton
-          provider="facebook"
-          onClick={() => handleSocialLogin("Facebook")}
-        />
-        <SocialLoginButton
-          provider="apple"
-          onClick={() => handleSocialLogin("Apple")}
-        />
       </div>
 
       <FormDivider />
