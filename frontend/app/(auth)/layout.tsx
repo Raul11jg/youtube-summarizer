@@ -6,7 +6,7 @@ export default function AuthLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="relative flex h-screen items-center justify-center">
+    <div className="relative flex h-screen items-center justify-center bg-neutral-50">
       <Link
         href="/"
         className="bg-primary hover:bg-primary/90 absolute top-8 left-8 rounded-lg px-4 py-2 text-white transition-all"

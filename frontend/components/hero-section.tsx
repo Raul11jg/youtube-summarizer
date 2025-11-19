@@ -34,7 +34,7 @@ export function HeroSection({ data }: HeroSectionProps) {
     : `${STRAPI_BASE_URL}${image.url}`;
 
   return (
-    <header className="relative h-[50vh] min-h-[400px] w-full overflow-hidden">
+    <header className="relative z-0 h-[50vh] min-h-[400px] w-full overflow-hidden">
       {imageUrl && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
