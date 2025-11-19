@@ -51,19 +51,11 @@ export default function SignInForm() {
           type="email"
           label="Email"
           placeholder="your@email.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
           required
           autoComplete="email"
         />
 
-        <PasswordInput
-          id="password"
-          label="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+        <PasswordInput id="password" label="Password" required />
 
         <div className="flex items-center justify-between text-sm">
           <label className="flex items-center gap-2">
