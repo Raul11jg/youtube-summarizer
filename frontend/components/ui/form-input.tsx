@@ -6,6 +6,7 @@ interface FormInputProps {
   placeholder?: string;
   required?: boolean;
   autoComplete?: string;
+  defaultValue?: string;
 }
 
 export default function FormInput({
@@ -16,6 +17,7 @@ export default function FormInput({
   placeholder,
   required = false,
   autoComplete,
+  defaultValue = "",
 }: FormInputProps) {
   return (
     <div className="space-y-2">
@@ -29,6 +31,7 @@ export default function FormInput({
         required={required}
         placeholder={placeholder}
         autoComplete={autoComplete}
+        defaultValue={defaultValue}
         className="border-border bg-card text-foreground placeholder-muted-foreground focus:border-primary focus:ring-primary/10 w-full rounded-xl border-2 px-4 py-3.5 shadow-sm transition-all focus:ring-4 focus:outline-none"
       />
     </div>

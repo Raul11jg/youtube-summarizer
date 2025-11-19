@@ -65,6 +65,7 @@ export default function SignUpForm() {
           placeholder="John Doe"
           required
           autoComplete="name"
+          defaultValue={formState.data.fullName ?? ""}
         />
         <FormError error={formState.zodError?.fullName} />
 
@@ -76,7 +77,9 @@ export default function SignUpForm() {
           placeholder="your@email.com"
           required
           autoComplete="email"
+          defaultValue={formState.data.email ?? ""}
         />
+        <FormError error={formState.zodError?.email} />
 
         <PasswordInput
           id="password"
@@ -85,7 +88,9 @@ export default function SignUpForm() {
           placeholder="Create a password"
           required
           autoComplete="new-password"
+          defaultValue={formState.data.password ?? ""}
         />
+        <FormError error={formState.zodError?.password} />
 
         <PasswordInput
           id="confirmPassword"
@@ -94,7 +99,9 @@ export default function SignUpForm() {
           placeholder="Confirm your password"
           required
           autoComplete="new-password"
+          defaultValue={formState.data.confirmPassword ?? ""}
         />
+        <FormError error={formState.zodError?.confirmPassword} />
 
         <SubmitButton
           isLoading={formState.isLoading}

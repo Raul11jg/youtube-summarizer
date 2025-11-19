@@ -9,6 +9,7 @@ interface PasswordInputProps {
   placeholder?: string;
   required?: boolean;
   autoComplete?: string;
+  defaultValue?: string;
 }
 
 export default function PasswordInput({
@@ -18,6 +19,7 @@ export default function PasswordInput({
   placeholder = "Enter your password",
   required = false,
   autoComplete = "current-password",
+  defaultValue = "",
 }: PasswordInputProps) {
   const [showPassword, setShowPassword] = useState(false);
 
@@ -34,6 +36,7 @@ export default function PasswordInput({
           required={required}
           placeholder={placeholder}
           autoComplete={autoComplete}
+          defaultValue={defaultValue}
           className="border-border bg-card text-foreground placeholder-muted-foreground focus:border-primary focus:ring-primary/10 w-full rounded-xl border-2 px-4 py-3.5 pr-12 shadow-sm transition-all focus:ring-4 focus:outline-none"
         />
         <button

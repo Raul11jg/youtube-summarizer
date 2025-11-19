@@ -1,3 +1,4 @@
+import { SignInSchema, SignUpSchema } from "@/validations/auth";
 import qs from "qs";
 
 export const STRAPI_BASE_URL =
@@ -39,6 +40,58 @@ export async function getStrapiData(url: string) {
       throw new Error(`HTTP error, status: ${resp.status}`);
     }
     const data = await resp.json();
+    return data;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+}
+
+export async function registerUser(userData: SignUpSchema) {
+  const url = `${STRAPI_BASE_URL}/api/auth/local/register`;
+
+  //Strapi requires username and password
+  const payload = {
+    username: userData.fullName,
+    email: userData.email,
+    password: userData.password,
+  };
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+    console.log({ response });
+    if (!response.ok) {
+      throw new Error(`HTTP error, status: ${response.status}`);
+    }
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
+}
+
+export async function loginUser(userData: SignInSchema) {
+  const url = `${STRAPI_BASE_URL}/api/auth/local`;
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP error, status: ${response.status}`);
+    }
+    const data = await response.json();
     return data;
   } catch (err) {
     console.error(err);
