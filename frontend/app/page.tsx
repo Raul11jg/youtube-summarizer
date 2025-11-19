@@ -3,13 +3,17 @@ import { HeroSection } from "@/components/hero-section";
 
 export default async function Home() {
   const strapiData = await getHomePage();
-  console.log(strapiData);
 
-  const { sections } = strapiData;
-  const heroSectionData = sections.find((section: { __component: string }) => section.__component === "layout.hero-section");
+  const { title, description, sections } = strapiData;
+  const heroSectionData = sections.find(
+    (section: { __component: string }) =>
+      section.__component === "layout.hero-section"
+  );
 
   return (
     <main>
+      {title && <h1 className="p-2 text-center text-5xl font-bold">{title}</h1>}
+      {description && <p className="p-2 text-center text-lg">{description}</p>}
       <HeroSection data={heroSectionData} />
     </main>
   );
