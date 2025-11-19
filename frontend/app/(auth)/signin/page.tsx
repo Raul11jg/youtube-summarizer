@@ -8,13 +8,15 @@ export const metadata: Metadata = {
     "Sign in to your account to access exclusive features and content.",
 };
 
-import { AuthIcon } from "@/components/auth-icon";
-
 export default function SignIn() {
   return (
-    <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl">
-      <AuthIcon />
-      <h1 className="mb-2 text-center text-2xl font-bold">Sign In</h1>
+    <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
+      <div className="flex flex-col space-y-2 text-center">
+        <h1 className="text-2xl font-semibold tracking-tight">Sign In</h1>
+        <p className="text-muted-foreground text-sm">
+          Enter your email below to sign in to your account
+        </p>
+      </div>
       <p className="text-muted-foreground mb-6 text-center text-sm">
         Don&apos;t have an account?{" "}
         <Link
