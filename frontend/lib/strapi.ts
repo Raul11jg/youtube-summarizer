@@ -2,7 +2,7 @@ import { SignInSchema, SignUpSchema } from "@/validations/auth";
 import qs from "qs";
 
 export const STRAPI_BASE_URL =
-  process.env.NEXT_PUBLIC_STRAPI_BASE_URL || "http://localhost:1337";
+  process.env.STRAPI_BASE_URL || "http://localhost:1337";
 
 const QUERY_HOME_PAGE = {
   populate: {
