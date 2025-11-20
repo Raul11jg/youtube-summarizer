@@ -32,3 +32,16 @@ export type FormState = {
   message: string;
   strapiError: string | null;
 };
+
+export type SignInFormState = {
+  data: {
+    email: string;
+    password: string;
+  };
+  isLoading: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  zodError: any;
+  success: boolean;
+  message: string;
+  strapiError: string | null;
+};

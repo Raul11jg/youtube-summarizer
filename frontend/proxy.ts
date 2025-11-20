@@ -3,12 +3,22 @@ import { cookies } from "next/headers";
 import { STRAPI_BASE_URL } from "./lib/strapi";
 
 const protectedRoutes = ["/dashboard"];
+const authRoutes = ["/signin", "/signup"];
 
 export async function proxy(request: NextRequest) {
-  //check if the request is for a protected route
+  const jwt = await getAuthenticatedUser();
+
+  // Redirect authenticated users away from auth pages
+  if (authRoutes.includes(request.nextUrl.pathname)) {
+    if (jwt) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+    return NextResponse.next();
+  }
+
+  // Check if the request is for a protected route
   if (protectedRoutes.includes(request.nextUrl.pathname)) {
-    //check if the user is authenticated
-    const jwt = await getAuthenticatedUser();
+    // Check if the user is authenticated
     if (!jwt) {
       return NextResponse.redirect(new URL("/signin", request.url));
     }
@@ -39,7 +49,7 @@ const getAuthenticatedUser = async () => {
   }
 };
 
-//Proxy configuration - proxy is only going to be used for protected routes
+//Proxy configuration - used for both protected routes and auth routes
 export const config = {
-  matcher: "/dashboard/:path*",
+  matcher: ["/dashboard/:path*", "/signin", "/signup"],
 };

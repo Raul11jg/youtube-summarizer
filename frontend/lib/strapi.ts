@@ -77,13 +77,18 @@ export async function registerUser(userData: SignUpSchema) {
 export async function loginUser(userData: SignInSchema) {
   const url = `${STRAPI_BASE_URL}/api/auth/local`;
 
+  const payload = {
+    identifier: userData.email,
+    password: userData.password,
+  };
+
   try {
     const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(userData),
+      body: JSON.stringify(payload),
     });
     if (!response.ok) {
       throw new Error(`HTTP error, status: ${response.status}`);
