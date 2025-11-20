@@ -1,5 +1,7 @@
-import ytdl from "@distube/ytdl-core";
-import { Readable } from "stream";
+import youtubedl from "youtube-dl-exec";
+import fs from "fs";
+import path from "path";
+import os from "os";
 
 export interface VideoMetadata {
   videoId: string;
@@ -44,23 +46,29 @@ class YouTubeServiceImpl implements YouTubeService {
   }
 
   /**
-   * Get video metadata using ytdl-core
-   * Note: YouTube Data API skeleton - currently uses ytdl-core for metadata
+   * Get video metadata using youtube-dl-exec
    */
   async getVideoMetadata(videoId: string): Promise<VideoMetadata> {
     try {
       const videoURL = `https://www.youtube.com/watch?v=${videoId}`;
-      const info = await ytdl.getInfo(videoURL);
+      const output = await youtubedl(videoURL, {
+        dumpSingleJson: true,
+        noWarnings: true,
+        noCheckCertificates: true,
+        preferFreeFormats: true,
+        youtubeSkipDashManifest: true,
+      });
 
-      const videoDetails = info.videoDetails;
+      // output is typed as any by the library, but contains the JSON metadata
+      const metadata = output as any;
 
       return {
         videoId,
-        title: videoDetails.title,
-        thumbnail: videoDetails.thumbnails[videoDetails.thumbnails.length - 1]?.url || "",
-        duration: parseInt(videoDetails.lengthSeconds, 10),
+        title: metadata.title,
+        thumbnail: metadata.thumbnail,
+        duration: metadata.duration,
       };
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching video metadata:", error);
       throw new Error(`Failed to fetch video metadata: ${error.message}`);
     }
@@ -74,29 +82,27 @@ class YouTubeServiceImpl implements YouTubeService {
     try {
       const videoURL = `https://www.youtube.com/watch?v=${videoId}`;
 
-      // Check video duration first to avoid processing very long videos
-      const info = await ytdl.getInfo(videoURL);
-      const duration = parseInt(info.videoDetails.lengthSeconds, 10);
-      const maxDuration = parseInt(process.env.MAX_VIDEO_DURATION || "3600", 10); // Default 1 hour
+      // Create a temporary file path
+      const tempDir = os.tmpdir();
+      const tempFilePath = path.join(tempDir, `${videoId}-${Date.now()}.mp3`);
 
-      if (duration > maxDuration) {
-        throw new Error(`Video is too long (${Math.floor(duration / 60)} minutes). Maximum allowed: ${Math.floor(maxDuration / 60)} minutes.`);
-      }
-
-      // Download audio stream
-      const audioStream = ytdl(videoURL, {
-        filter: "audioonly",
-        quality: "lowestaudio", // Use lowest quality to reduce file size and cost
+      // Download audio using youtube-dl-exec
+      await youtubedl(videoURL, {
+        extractAudio: true,
+        audioFormat: "mp3",
+        output: tempFilePath,
+        noWarnings: true,
+        noCheckCertificates: true,
       });
 
-      // Convert stream to buffer
-      const chunks: Buffer[] = [];
-      return new Promise((resolve, reject) => {
-        audioStream.on("data", (chunk) => chunks.push(chunk));
-        audioStream.on("end", () => resolve(Buffer.concat(chunks)));
-        audioStream.on("error", (error) => reject(error));
-      });
-    } catch (error) {
+      // Read the file into a buffer
+      const audioBuffer = await fs.promises.readFile(tempFilePath);
+
+      // Clean up: delete the temporary file
+      await fs.promises.unlink(tempFilePath);
+
+      return audioBuffer;
+    } catch (error: any) {
       console.error("Error downloading audio:", error);
       throw new Error(`Failed to download audio: ${error.message}`);
     }

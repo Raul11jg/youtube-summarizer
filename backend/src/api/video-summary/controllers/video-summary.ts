@@ -11,7 +11,6 @@ export default factories.createCoreController("api::video-summary.video-summary"
     try {
       const { youtubeUrl } = ctx.request.body;
       const user = ctx.state.user;
-      console.log("user", user);
       if (!user) {
         return ctx.unauthorized("You must be logged in to process videos");
       }
@@ -33,7 +32,6 @@ export default factories.createCoreController("api::video-summary.video-summary"
           user: user.id,
         },
       });
-      console.log("existing", existing);
 
       if (existing && (existing as any).length > 0) {
         ctx.status = 200;
@@ -53,8 +51,6 @@ export default factories.createCoreController("api::video-summary.video-summary"
           user: user.id,
         },
       });
-
-      console.log("videoSummary", videoSummary);
 
       // Process video asynchronously
       setImmediate(async () => {
