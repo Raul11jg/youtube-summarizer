@@ -13,7 +13,7 @@ export interface AIService {
 class OpenAIService implements AIService {
   /**
    * Transcribe audio using OpenAI Whisper API
-   * Note: Whisper API accepts files up to 25MB
+   * Note: Whisper API accepts files up to 25MB.
    */
   async transcribeAudio(audioBuffer: Buffer): Promise<string> {
     try {
