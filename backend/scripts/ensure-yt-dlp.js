@@ -66,41 +66,53 @@ if (!fs.existsSync(binaryPath)) {
     downloadUrl += "_linux";
   }
 
-  console.log(`Downloading from: ${downloadUrl}`);
+  const downloadFile = (url) => {
+    console.log(`Downloading from: ${url}`);
 
-  const file = fs.createWriteStream(binaryPath);
-  https
-    .get(downloadUrl, (response) => {
-      if (response.statusCode !== 200) {
-        console.error(`Failed to download: HTTP ${response.statusCode}`);
-        fs.unlink(binaryPath, () => {}); // Delete partial file
-        process.exit(1);
-      }
+    https
+      .get(url, (response) => {
+        // Handle Redirects
+        if (response.statusCode === 301 || response.statusCode === 302 || response.statusCode === 303) {
+          const newUrl = response.headers.location;
+          console.log(`Redirecting to: ${newUrl}`);
+          downloadFile(newUrl);
+          return;
+        }
 
-      response.pipe(file);
+        if (response.statusCode !== 200) {
+          console.error(`Failed to download: HTTP ${response.statusCode}`);
+          fs.unlink(binaryPath, () => {}); // Delete partial file
+          process.exit(1);
+        }
 
-      file.on("finish", () => {
-        file.close(() => {
-          console.log("Download completed.");
+        const file = fs.createWriteStream(binaryPath);
+        response.pipe(file);
 
-          // Make executable on non-Windows
-          if (process.platform !== "win32") {
-            try {
-              execSync(`chmod +x "${binaryPath}"`);
-              console.log("Made binary executable.");
-            } catch (e) {
-              console.error("Failed to chmod binary:", e.message);
+        file.on("finish", () => {
+          file.close(() => {
+            console.log("Download completed.");
+
+            // Make executable on non-Windows
+            if (process.platform !== "win32") {
+              try {
+                execSync(`chmod +x "${binaryPath}"`);
+                console.log("Made binary executable.");
+              } catch (e) {
+                console.error("Failed to chmod binary:", e.message);
+              }
             }
-          }
-          console.log("yt-dlp setup successful.");
+            console.log("yt-dlp setup successful.");
+          });
         });
+      })
+      .on("error", (err) => {
+        fs.unlink(binaryPath, () => {});
+        console.error("Error downloading file:", err.message);
+        process.exit(1);
       });
-    })
-    .on("error", (err) => {
-      fs.unlink(binaryPath, () => {});
-      console.error("Error downloading file:", err.message);
-      process.exit(1);
-    });
+  };
+
+  downloadFile(downloadUrl);
 } else {
   console.log("yt-dlp binary already exists.");
 }
