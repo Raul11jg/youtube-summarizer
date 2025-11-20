@@ -154,7 +154,7 @@ export default factories.createCoreController("api::video-summary.video-summary"
     }
 
     const entity = await strapi.entityService.findOne("api::video-summary.video-summary", id, {
-      populate: ["videoQuestions"],
+      populate: ["videoQuestions", "user"],
     });
 
     if (!entity) {
