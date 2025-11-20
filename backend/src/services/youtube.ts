@@ -2,6 +2,8 @@ import youtubedl from "youtube-dl-exec";
 import fs from "fs";
 import path from "path";
 import os from "os";
+import ffmpegPath from "ffmpeg-static";
+import ffprobePath from "ffprobe-static";
 
 export interface VideoMetadata {
   videoId: string;
@@ -57,6 +59,7 @@ class YouTubeServiceImpl implements YouTubeService {
         noCheckCertificates: true,
         preferFreeFormats: true,
         youtubeSkipDashManifest: true,
+        ffmpegLocation: ffmpegPath as string,
       });
 
       // output is typed as any by the library, but contains the JSON metadata
@@ -93,6 +96,7 @@ class YouTubeServiceImpl implements YouTubeService {
         output: tempFilePath,
         noWarnings: true,
         noCheckCertificates: true,
+        ffmpegLocation: ffmpegPath as string,
       });
 
       // Read the file into a buffer
