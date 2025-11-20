@@ -68,12 +68,15 @@ export default factories.createCoreController("api::video-summary.video-summary"
           });
 
           // Download audio
+          console.log("Downloading audio...");
           const audioBuffer = await youtubeService.downloadAudio(videoId);
 
           // Transcribe
+          console.log("Transcribing audio...");
           const transcript = await aiService.transcribeAudio(audioBuffer);
 
-          // Summarize
+          // Generate summary
+          console.log("Generating summary...");
           const summary = await aiService.summarizeTranscript(transcript);
 
           // Update with results
