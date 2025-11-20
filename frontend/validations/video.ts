@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { z } from "zod";
 
 // YouTube URL validation regex
@@ -27,7 +28,7 @@ export interface VideoFormState {
   message: string;
   strapiError: string | null;
   isLoading: boolean;
-  zodError: z.ZodError["flatten"]["fieldErrors"] | null;
+  zodError: any;
   data: {
     youtubeUrl?: string;
   };
@@ -39,7 +40,7 @@ export interface QuestionFormState {
   message: string;
   strapiError: string | null;
   isLoading: boolean;
-  zodError: z.ZodError["flatten"]["fieldErrors"] | null;
+  zodError: any;
   data: {
     question?: string;
   };
