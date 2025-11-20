@@ -14,8 +14,7 @@
   "attributes": {
     "youtubeUrl": {
       "type": "string",
-      "required": true,
-      "unique": true
+      "required": true
     },
     "youtubeVideoId": {
       "type": "string",

@@ -549,9 +549,7 @@ export interface ApiVideoSummaryVideoSummary
       'oneToMany',
       'api::video-question.video-question'
     >;
-    youtubeUrl: Schema.Attribute.String &
-      Schema.Attribute.Required &
-      Schema.Attribute.Unique;
+    youtubeUrl: Schema.Attribute.String & Schema.Attribute.Required;
     youtubeVideoId: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }

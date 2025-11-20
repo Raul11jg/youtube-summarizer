@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useActionState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { submitQuestion } from "@/app/actions/video";
 import { QuestionFormState, VideoQuestion } from "@/validations/video";
 import { Loader2, Send } from "lucide-react";
@@ -25,7 +25,11 @@ export function VideoChat({
   initialQuestions,
 }: VideoChatProps) {
   const [questions, setQuestions] = useState<VideoQuestion[]>(initialQuestions);
-  const [formState, formAction] = useActionState(submitQuestion, INITIAL_STATE);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [zodErrors, setZodErrors] = useState<Record<string, string[]> | null>(
+    null
+  );
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -34,22 +38,36 @@ export function VideoChat({
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [questions]);
 
-  // Handle successful question submission
-  useEffect(() => {
-    if (formState.success && formState.answer) {
-      // Add the new Q&A to the list
-      const newQuestion: VideoQuestion = {
-        id: Date.now(), // Temporary ID
-        question: formState.data.question || "",
-        answer: formState.answer,
-        createdAt: new Date().toISOString(),
-      };
-      setQuestions((prev) => [...prev, newQuestion]);
+  async function handleSubmit(formData: FormData) {
+    setIsLoading(true);
+    setError(null);
+    setZodErrors(null);
 
-      // Reset form
-      formRef.current?.reset();
+    try {
+      const result = await submitQuestion(INITIAL_STATE, formData);
+
+      if (result.success && result.answer) {
+        // Add the new Q&A to the list
+        const newQuestion: VideoQuestion = {
+          id: Date.now(), // Temporary ID
+          question: result.data.question || "",
+          answer: result.answer,
+          createdAt: new Date().toISOString(),
+        };
+        setQuestions((prev) => [...prev, newQuestion]);
+
+        // Reset form
+        formRef.current?.reset();
+      } else {
+        if (result.strapiError) setError(result.strapiError);
+        if (result.zodError) setZodErrors(result.zodError);
+      }
+    } catch {
+      setError("An unexpected error occurred");
+    } finally {
+      setIsLoading(false);
     }
-  }, [formState.success, formState.answer, formState.data.question]);
+  }
 
   return (
     <div className="rounded-xl border bg-white p-6 dark:bg-neutral-950">
@@ -84,7 +102,7 @@ export function VideoChat({
             </div>
           ))
         )}
-        {formState.isLoading && (
+        {isLoading && (
           <div className="flex justify-start">
             <div className="flex items-center gap-2 rounded-lg rounded-tl-none bg-white px-4 py-2 shadow-sm dark:bg-neutral-800">
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -96,26 +114,26 @@ export function VideoChat({
       </div>
 
       {/* Error display */}
-      {formState.strapiError && (
+      {error && (
         <div className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-800 dark:bg-red-950 dark:text-red-200">
-          {formState.strapiError}
+          {error}
         </div>
       )}
 
-      {formState.zodError?.question && (
+      {zodErrors?.question && (
         <div className="mb-4 rounded-md bg-red-50 p-3 text-sm text-red-800 dark:bg-red-950 dark:text-red-200">
-          {formState.zodError.question[0]}
+          {zodErrors.question[0]}
         </div>
       )}
 
       {/* Question input form */}
-      <form ref={formRef} action={formAction} className="flex gap-2">
+      <form ref={formRef} action={handleSubmit} className="flex gap-2">
         <input type="hidden" name="videoSummaryId" value={videoSummaryId} />
         <textarea
           name="question"
           rows={2}
           placeholder="Ask a question about this video..."
-          disabled={formState.isLoading}
+          disabled={isLoading}
           onKeyDown={(e) => {
             if (e.key === "Enter" && !e.shiftKey) {
               e.preventDefault();
@@ -126,10 +144,10 @@ export function VideoChat({
         />
         <button
           type="submit"
-          disabled={formState.isLoading}
+          disabled={isLoading}
           className="bg-primary text-primary-foreground hover:bg-primary/90 flex items-center self-end rounded-lg px-4 py-2 transition-colors disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {formState.isLoading ? (
+          {isLoading ? (
             <Loader2 className="h-5 w-5 animate-spin" />
           ) : (
             <Send className="h-5 w-5" />
