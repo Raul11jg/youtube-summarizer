@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 import SocialLoginButton from "@/components/ui/social-login-button";
 import FormDivider from "@/components/ui/form-divider";
 import FormInput from "@/components/ui/form-input";
@@ -21,6 +22,16 @@ const INITIAL_STATE: SignInFormState = {
     password: "",
   },
 };
+
+function SignInButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <SubmitButton isLoading={pending} loadingText="Signing in...">
+      Sign in
+    </SubmitButton>
+  );
+}
 
 export default function SignInForm() {
   const [formState, formAction] = useActionState(
@@ -85,12 +96,7 @@ export default function SignInForm() {
           </a>
         </div>
 
-        <SubmitButton
-          isLoading={formState.isLoading}
-          loadingText="Signing in..."
-        >
-          Sign in
-        </SubmitButton>
+        <SignInButton />
 
         {formState.strapiError && (
           <p className="text-red-500">{formState.strapiError}</p>
