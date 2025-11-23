@@ -5,6 +5,7 @@ import { Footer } from "@/components/footer";
 
 export async function generateMetadata() {
   const strapiData = await getHomePage();
+  if (!strapiData) return {};
   const { title, description } = strapiData;
   return {
     title,
@@ -15,8 +16,12 @@ export async function generateMetadata() {
 export default async function Home() {
   const strapiData = await getHomePage();
 
+  if (!strapiData) {
+    return <div>Loading...</div>; // Or some fallback
+  }
+
   const { sections } = strapiData;
-  const heroSectionData = sections.find(
+  const heroSectionData = sections?.find(
     (section: { __component: string }) =>
       section.__component === "layout.hero-section"
   );
