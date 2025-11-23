@@ -43,5 +43,18 @@
   "strapi": {
     "uuid": "49fa3c91-bfc1-41ae-b4f2-da5116b1a51b",
     "installId": "dbec809a1b4ea33e6e4b4e9224f1d16e2c0b0453f392166e319727f57653d560"
+  },
+  "pnpm": {
+    "ignoredBuiltDependencies": [
+      "ffmpeg-static",
+      "youtube-dl-exec"
+    ],
+    "onlyBuiltDependencies": [
+      "@swc/core",
+      "better-sqlite3",
+      "core-js-pure",
+      "esbuild",
+      "sharp"
+    ]
   }
 }
