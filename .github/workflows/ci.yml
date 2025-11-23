@@ -41,6 +41,11 @@ jobs:
       - name: Build
         run: pnpm run build
 
+      - name: Lighthouse CI
+        run: pnpm run lighthouse
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
   backend-check:
     name: Backend Check
     runs-on: ubuntu-latest
